@@ -1,0 +1,30 @@
+name: 台股半導體晨報
+
+on:
+  schedule:
+    # 08:30 台灣時間 (UTC+8) = 00:30 UTC，週一至週五
+    - cron: '30 0 * * 1-5'
+  workflow_dispatch:  # 允許手動觸發（測試用）
+
+jobs:
+  send-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run morning report
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          FUGLE_API_KEY: ${{ secrets.FUGLE_API_KEY }}
+        run: python morning_report.py
