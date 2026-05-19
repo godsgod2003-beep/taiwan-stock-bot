@@ -1,1 +1,1 @@
-worker: python interactive_bot.py
+worker: python main.py
